@@ -35,5 +35,4 @@
 ## Off-site (matters more than any tag at first)
 
 A new domain takes months to rank. The links that count early: the ARKlight GitHub README,
-the PyPI project page, and a launch post. Comparison pages ("ARKlight vs Eleventy/Astro")
-are where new tools usually get found, but only if the claims in them are accurate.
+the PyPI project page, and a launch post.
