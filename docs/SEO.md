@@ -24,11 +24,11 @@
 - **Analytics.** ARKlight sets `script-src 'self'` by default; a third-party script needs `Site(trusted_script_origins=[...])` and a deliberate decision.
 - **Per-page social images.** One shared `og-image.png`, currently a placeholder.
 
-## Verify after the first deploy
+## Verify after you put this somewhere
 
-1. **Canonical vs `.html`.** ARKlight writes `docs/cli.html` and links to `.html` files, but the canonical tags say `/docs/cli`. This is fine on hosts that serve extensionless URLs (GitHub Pages and Cloudflare Pages do, as far as I know, but check yours). `make serve` mimics that behavior locally. If the host serves only one form, make sure the other redirects to it.
+1. **Canonical vs `.html`.** ARKlight writes `docs/cli.html` and links to `.html` files, but the canonical tags say `/docs/cli`. This is fine on a host that serves extensionless URLs. `make serve` mimics that behavior locally. If the host serves only one form, make sure the other redirects to it.
 2. `/anything-missing` returns **HTTP 404** with the 404 page.
-3. Submit `sitemap.xml` in Search Console; confirm 35 (phase 2) or 14 (phase 1) URLs are discovered.
+3. Submit `sitemap.xml` in Search Console; confirm the 14 non-404 URLs are discovered.
 4. Check a page in a social-card preview tool to confirm the OG image loads.
 5. Look at the site in a real browser on a phone. The layout was **not** visually verified.
 

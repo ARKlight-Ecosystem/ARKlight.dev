@@ -1,12 +1,11 @@
 # Authoring
 
-## Add or finish a page
+## Add or edit a page
 
-1. The route must be in `pages/manifest.py` (route, section, phase, nav label).
+1. The route must be in `pages/manifest.py` (route, section, nav label).
 2. Add or edit its dict in the matching `content/*.py` module.
-3. Run `make dev2` (or `dev1`) and open it with `make serve`.
-4. When the text is real, **remove `draft=True`** (or stop using the `draft(...)` helper).
-5. `make status` to refresh `docs/CONTENT-STATUS.md`.
+3. `make build` to generate `site.py` and build it, then `make serve` to look at it.
+4. `make check` to catch a missing field or a route/content mismatch before you build.
 
 ## A page dict
 
@@ -35,12 +34,12 @@
 
 ## Rules that will bite you
 
-- **Internal links must point at a built route.** In a phase-1 build, links to phase-2
-  pages are dropped automatically (the label stays as text). Typos fail the build.
+- **Internal links must point at a route in `pages/manifest.py`.** A typo is dropped
+  silently to plain text rather than failing the build; `make check` won't catch it, so
+  proofread links by eye.
 - **Verify every claim about ARKlight** with `arklight search <Name>` or the compiler source.
   Reference tables here were checked that way; several first guesses were wrong
   (for example `Action.remove` is index-based).
-- Don't write comparison pages from memory. Check the other tool's current docs.
 
 ## Regenerating the reference data
 

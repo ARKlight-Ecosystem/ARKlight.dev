@@ -17,11 +17,12 @@ from site_config import (
     FAVICON, OG_IMAGE, SITE_NAME, SITE_URL, TAGLINE, REPO_URL, PYPI_URL,
 )
 from pages.manifest import PAGES, TOP_NAV, SECTION_TITLES, by_route
-from pages.active import ACTIVE
 from content import CONTENT
 
 _INLINE = re.compile(r"(`[^`]+`|\[[^\]]+\]\([^)]+\))")
 _LINK = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
+
+ROUTES = {p["route"] for p in PAGES}
 
 
 def _is_internal(href):
@@ -30,12 +31,12 @@ def _is_internal(href):
 
 def _link_ok(href):
     """Internal links must resolve to a route in this build, or ARKlight
-    halts on an unresolved link. Phase-1 builds drop links to phase-2
-    pages (the label stays as plain text)."""
+    halts on an unresolved link. Checked here too so a typo fails fast
+    with a clear message instead of a raw compiler error."""
     if not _is_internal(href):
         return True
     path = href.split("#", 1)[0] or "/"
-    return path in ACTIVE
+    return path in ROUTES
 
 
 def plain(text):
@@ -89,7 +90,7 @@ def block(b):
         cards = []
         for title, text, href in b[1]:
             if not _link_ok(href):
-                continue  # phase-1 build: skip cards for pages not built yet
+                continue  # skip cards whose target route doesn't exist
             cards.append(Container(
                 Heading(title, level=3), Text(text), Link("Open", href=href),
                 class_name="card",
@@ -105,7 +106,7 @@ def block(b):
 def _header():
     links = [Link(SITE_NAME, href="/")]
     for label, href in TOP_NAV:
-        if href in ACTIVE:
+        if href in ROUTES:
             links.append(Link(label, href=href))
     return Header(Container(*links, class_name="nav"))
 
@@ -113,7 +114,7 @@ def _header():
 def _footer():
     kids = []
     for label, href in (("License", "/license"), ("Changelog", "/changelog")):
-        if href in ACTIVE:
+        if href in ROUTES:
             kids.append(Link(label, href=href))
     kids.append(Link("GitHub", href=REPO_URL))
     kids.append(Link("PyPI", href=PYPI_URL))
@@ -128,14 +129,14 @@ def _footer():
 
 
 def _sidebar(section, route):
-    pages = [p for p in PAGES if p["section"] == section and p["route"] in ACTIVE]
+    pages = [p for p in PAGES if p["section"] == section and p["route"] in ROUTES]
     title = SECTION_TITLES.get(section, section.title())
     links = [Link(p["label"], href=p["route"]) for p in pages]
     return Nav(Heading(title, level=3), *[Container(l) for l in links])
 
 
 def _prev_next(section, route):
-    pages = [p for p in PAGES if p["section"] == section and p["route"] in ACTIVE]
+    pages = [p for p in PAGES if p["section"] == section and p["route"] in ROUTES]
     routes = [p["route"] for p in pages]
     if route not in routes or section not in ("tutorial",):
         return None
@@ -173,17 +174,6 @@ def _head_props(route, c):
     return props
 
 
-def _draft_banner(c):
-    if not c.get("draft"):
-        return []
-    return [
-        Container(
-            Text("DRAFT OUTLINE - not publishable yet. See docs/CONTENT-STATUS.md."),
-            class_name="card",
-        )
-    ]
-
-
 def render(route):
     c = CONTENT[route]
     meta = by_route()[route]
@@ -196,15 +186,14 @@ def render(route):
     body = [Heading(c["title"], level=1)]
     if c.get("lead"):
         body.append(Text(c["lead"], class_name="muted"))
-    body.extend(_draft_banner(c))
     body.extend(block(b) for b in c["blocks"])
     pn = _prev_next(section, route)
     if pn is not None:
         body.append(pn)
     article = Article(*body)
 
-    in_section = section in ("tutorial", "docs", "examples", "compare", "project", "start")
-    siblings = [p for p in PAGES if p["section"] == section and p["route"] in ACTIVE]
+    in_section = section in ("tutorial", "docs", "examples", "project", "start")
+    siblings = [p for p in PAGES if p["section"] == section and p["route"] in ROUTES]
     if in_section and len(siblings) > 1:
         main = Main(Container(_sidebar(section, route), article, class_name="sidebar"))
     else:

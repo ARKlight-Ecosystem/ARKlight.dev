@@ -1,5 +1,3 @@
-from ._util import draft
-
 PAGES = {
     "/changelog": {
         "title": "Changelog",
@@ -38,35 +36,6 @@ PAGES = {
             ("note", "Read `LICENSE` in the [repository](https://github.com/ARKlight-Ecosystem/ARKlight) before setting the flag in anything you plan to distribute."),
         ],
     },
-    "/roadmap": draft(
-        "Roadmap",
-        "What is shipped, in progress and planned for ARKlight, drawn from PROGRESS.md and the milestone table.",
-        "Where the project is heading.",
-        [
-            ("Shipped", "Summarize the Snapshot table in PROGRESS.md."),
-            ("Branches", "Explain main versus alpha and what exists only on alpha (check before writing)."),
-            ("Planned", "Only items the maintainers have actually committed to; do not speculate."),
-        ],
-        "PROGRESS.md and docs/Foundational/ARCHITECTURE.md milestone table",
-    ),
-    "/blog": draft(
-        "Blog",
-        "News, release notes and write-ups from the ARKlight project, newest first.",
-        "Release notes and write-ups.",
-        [("Posts", "List posts newest first once there is more than one.")],
-    ),
-    "/blog/introducing-arklight": draft(
-        "Introducing ARKlight",
-        "The launch post for ARKlight: a Python-first compiler that builds websites without writing HTML, CSS or JavaScript.",
-        "Why this exists.",
-        [
-            ("The problem", "Python developers need three more languages to ship a page."),
-            ("The approach", "Compiler first, runtime last, closed vocabulary."),
-            ("What it is not", "Not React in Python; link to /why."),
-            ("Try it", "Install, build, link to the tutorial."),
-        ],
-        "docs/Foundational/PITCH.md; written in the author's own voice",
-    ),
     "/404": {
         "title": "Page not found",
         "description": "That page does not exist on the ARKlight site. Try the home page, getting started or the reference.",

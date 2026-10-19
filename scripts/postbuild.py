@@ -11,7 +11,7 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 
-from pages.active import ACTIVE  # noqa: E402
+from pages.manifest import PAGES  # noqa: E402
 from site_config import SITE_URL  # noqa: E402
 
 
@@ -21,7 +21,7 @@ def main():
         sys.exit(f"output directory {out!r} not found; run the build first")
 
     urls = []
-    for route in ACTIVE:
+    for route in (p["route"] for p in PAGES):
         if route == "/404":
             continue
         loc = SITE_URL + ("/" if route == "/" else route)

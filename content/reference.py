@@ -1,8 +1,6 @@
 import json
 import os
 
-from ._util import draft
-
 _GEN = json.load(open(os.path.join(os.path.dirname(__file__), "generated_reference.json")))
 V = _GEN["arklight_version"]
 
@@ -10,49 +8,6 @@ V = _GEN["arklight_version"]
 def _codes(names):
     return ", ".join(f"`{n}`" for n in names)
 
-
-_derive = draft(
-    "Derive",
-    "Reference for ARKlight's Derive.* derivations: math, string, list and formatting functions usable in Computed values.",
-    "Pure functions over state.",
-    [
-        ("How derivations work", "Explain Computed(...) with Derive.* kinds, and that the vocabulary is closed."),
-        ("Math and numbers", "Group the numeric derivations with one example each."),
-        ("Strings and formatting", "Group the string and formatting derivations."),
-        ("Lists", "Group the list_* derivations."),
-    ],
-    "arklight search Derive.<name> for each entry's exact argument contract",
-)
-_derive["blocks"].append(("h2", f"All derivations in v{V} (generated)"))
-_derive["blocks"].append(("p", _codes(_GEN["derive"])))
-
-_pred = draft(
-    "Predicates",
-    "Reference for ARKlight's Predicate.* conditions used with Show: equals, gt, lt, in_range, one_of, is_empty, and combinators.",
-    "Conditions for Show.",
-    [
-        ("Using a predicate", "Show(Predicate.*(...)) with a worked example."),
-        ("Comparison and membership", "equals, gt, lt, in_range, one_of."),
-        ("Combining", "and_, or_, not_."),
-    ],
-    "arklight search Predicate.<name>",
-)
-_pred["blocks"].append(("h2", f"All predicates in v{V} (generated)"))
-_pred["blocks"].append(("p", _codes(_GEN["predicates"])))
-
-_platform = draft(
-    "Platform APIs",
-    "Reference for ARKlight's PlatformAPI entries: clipboard_write, db (local key/value storage) and notify.",
-    "Browser capabilities, behind a closed vocabulary.",
-    [
-        ("What a Platform API is", "Explain the IR layer and that db is Web-only on main (IndexedDB)."),
-        ("clipboard_write, db, notify", "One short worked example each."),
-        ("Beyond the vocabulary", "Point to script-extension and Provider for anything not covered."),
-    ],
-    "docs/Foundational/PLATFORM-APIS.md",
-)
-_platform["blocks"].append(("h2", f"Entries in v{V} (generated)"))
-_platform["blocks"].append(("p", _codes(_GEN["platform_apis"])))
 
 PAGES = {
     "/docs": {
@@ -66,11 +21,6 @@ PAGES = {
                 ("Actions", "State-changing actions and the built-in click behaviors.", "/docs/actions"),
                 ("CLI", "build, pack, unpack, pwa, deploy, new, search, live-streaming.", "/docs/cli"),
                 ("Gotchas", "The four mistakes that cost the most build cycles, and the error table.", "/docs/gotchas"),
-                ("Derive", "Computed-value functions.", "/docs/derive"),
-                ("Predicates", "Conditions for Show.", "/docs/predicates"),
-                ("Configuration", "arklight.config.py.", "/docs/config"),
-                ("Experimental APIs", "The registered escape hatches.", "/docs/experimental"),
-                ("Platform APIs", "Clipboard, local storage, notifications.", "/docs/platform-apis"),
             ]),
         ],
     },
@@ -194,30 +144,4 @@ PAGES = {
             ("p", "For anything else, run `arklight build --debug` to see the full traceback."),
         ],
     },
-    "/docs/derive": _derive,
-    "/docs/predicates": _pred,
-    "/docs/config": draft(
-        "Configuration",
-        "Reference for arklight.config.py: project-level ARKlight settings, the rei narrator section, and the overdrive escape for runtime-supplied paths.",
-        "Per-project settings in one file.",
-        [
-            ("What goes in arklight.config.py", "CONFIG dict shape; the include line requirement applies here too."),
-            ("The rei section", "default_mode: 'narrate' as a project default."),
-            ("Unresolved paths", "CONFIG = {'overdrive': True} is a narrow escape for paths a server genuinely supplies at runtime, not a default fix."),
-        ],
-        "docs/Foundational/CONFIGURABILITY.md and AUTHORING-GUIDE.md#configuration",
-    ),
-    "/docs/experimental": draft(
-        "Experimental APIs",
-        "The seven registered ARKlight experimental features: media queries, install-PWA button, CSS import, raw postprocess, script-extension, Provider integration and provider scripts.",
-        "The sanctioned escape hatches, and nothing else.",
-        [
-            ("What 'experimental' means", "Each use prints a warning inline and in an end-of-build summary; anything outside the registered seven is not an escape hatch."),
-            ("The seven features", "Table: css-media-queries, experimental-install-pwa, css-import, raw-postprocess (removed), script-extension, provider-integration, provider-scripts."),
-            ("script-extension in practice", "A minimal ScriptExtension subclass registration, and when to prefer waiting on a roadmapped feature."),
-            ("Provider for backends", "Use Provider, not script-extension, to talk to a real backend service."),
-        ],
-        "docs/Foundational/EXPERIMENTAL-APIS.md and PROVIDER-SDK.md",
-    ),
-    "/docs/platform-apis": _platform,
 }
