@@ -15,6 +15,7 @@ _ROWS = [
 
     ("/tutorial",                      "tutorial", "Tutorial overview"),
     ("/tutorial/pages-and-routes",     "tutorial", "1. Pages and routes"),
+    ("/tutorial/state-and-actions",    "tutorial", "2. State and actions"),
 
     ("/docs",                          "docs",     "Reference overview"),
     ("/docs/components",               "docs",     "Components"),
@@ -24,6 +25,7 @@ _ROWS = [
 
     ("/examples",                      "examples", "Examples overview"),
     ("/examples/hello-site",           "examples", "Hello site"),
+    ("/examples/counter",              "examples", "Counter"),
 
     ("/changelog",                     "project",  "Changelog"),
     ("/license",                       "project",  "License"),

@@ -7,6 +7,7 @@ PAGES = {
             ("p", "The lesson is a small, complete `site.py`. Build it with `arklight build site.py` and open the result. If a build fails, check the [gotchas](/docs/gotchas) before anything else."),
             ("cards", [
                 ("1. Pages and routes", "Site, Page, and the @site.page decorator.", "/tutorial/pages-and-routes"),
+                ("2. State and actions", "A click counter: State, Bind, and Action.*, no hand-written JS.", "/tutorial/state-and-actions"),
             ]),
         ],
     },
@@ -31,6 +32,31 @@ PAGES = {
                 "Move the page bodies into helper functions in another module, keeping every `@site.page` in the entry file.",
             ]),
             ("p", "Next: the [reference](/docs) covers every component and action in the vocabulary."),
+        ],
+    },
+    "/tutorial/state-and-actions": {
+        "title": "State and actions",
+        "description": "Lesson 2: a click counter built from State, Bind and Action.*, with no JavaScript written by hand anywhere in the file.",
+        "lead": "State lives on the page. Bind displays it. Action.* changes it.",
+        "blocks": [
+            ("h2", "Declare the state"),
+            ("p", "`State(\"count\", 0)` is a child of `Page(...)`, not a bare statement -- that's what makes it declared on the page. It takes a name and a starting value."),
+            ("code", "# include <stdlib.ARKlight>\n\nsite = Site()\n\n@site.page(\"/\")\ndef home():\n    return Page(\n        State(\"count\", 0),\n        Heading(\"Counter\"),\n        Text(Bind(\"count\")),\n        Button(\"Increment\", on_click=Action.increment(\"count\")),\n        Button(\"Decrement\", on_click=Action.decrement(\"count\")),\n        Button(\"Reset\", on_click=Action.set(\"count\", value=0)),\n        title=\"Counter\",\n    )"),
+            ("note", "`State(...)` called as a bare statement before the `return`, instead of passed as a child of `Page(...)`, fails with \"references state that isn't declared on this page\" the moment anything tries to `Bind` it. See [gotchas](/docs/gotchas)."),
+            ("h2", "Display it"),
+            ("p", "`Bind(\"count\")` as a direct child of `Text(...)` renders the live value. It's for a single scalar value; a list-valued state uses `Repeat` instead."),
+            ("h2", "Change it"),
+            ("list", [
+                "`Action.increment(\"count\")` and `Action.decrement(\"count\")` each take an optional `delta`, 1 by default.",
+                "`Action.set(\"count\", value=0)` sets it outright -- useful for a reset button.",
+                "Every `Action.*` call is built-in and validated at build time against a closed vocabulary. There's no arbitrary JS here.",
+            ]),
+            ("h2", "Try it"),
+            ("list", [
+                "Change the increment button's delta to 5 and see the build re-validate it.",
+                "Add a squared value next to the counter: `Computed(\"squared\", deps=(\"count\",), derive=Derive.multiply(\"count\", \"count\"))`, then `Bind(\"squared\")`.",
+            ]),
+            ("p", "See it live in [examples](/examples/counter), or move on to the [reference](/docs) for the full `State`/`Action`/`Derive` vocabulary."),
         ],
     },
 }
