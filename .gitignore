@@ -2,3 +2,5 @@ ARK/
 __pycache__/
 *.pyc
 *.patch
+md-theme-demo/.venv/
+ARKlight/

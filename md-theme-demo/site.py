@@ -13,6 +13,6 @@
 # only the string passed to markdown_theme= is.
 import os
 
-MD_THEME = os.environ.get("MD_THEME", "light")
+MD_THEME = os.environ.get("MD_THEME", "dark")
 
 site = Site(markdown_theme=MD_THEME)
