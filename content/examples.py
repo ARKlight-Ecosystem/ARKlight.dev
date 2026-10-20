@@ -13,6 +13,7 @@ PAGES = {
             ("cards", [
                 ("Hello site", "A shared nav bar, a styled card and a toggle behavior. Straight from the ARKlight repo.", "/examples/hello-site"),
                 ("Counter", "A click counter built from State, Bind and Action.*, with a derived squared value.", "/examples/counter"),
+                ("Todo list", "A growing list built from State, Repeat, Show and a bound input, no hand-written JS.", "/examples/todo-list"),
             ]),
         ],
     },
@@ -46,6 +47,23 @@ PAGES = {
                 "Nothing here is hand-written JavaScript -- every behavior is validated against a fixed vocabulary at build time.",
             ]),
             ("p", "Walked through step by step in the [tutorial](/tutorial/state-and-actions)."),
+        ],
+    },
+    "/examples/todo-list": {
+        "title": "Todo list",
+        "description": "A complete, buildable ARKlight todo list: State, Bind.model, Action.append/set/reset, Watch, Repeat and Show, with no hand-written JavaScript anywhere in the file.",
+        "lead": "Every piece from the lists-and-conditionals lesson, assembled into one file.",
+        "blocks": [
+            ("code", "# include <stdlib.ARKlight>\n\nsite = Site()\n\n@site.page(\"/\")\ndef home():\n    return Page(\n        State(\"draft\", \"\"),\n        State(\"tasks\", []),\n        Heading(\"Tasks\"),\n        Text(\"Add a task, then clear the list whenever you're done.\", class_name=\"muted\"),\n        Container(\n            Input(bind_value=Bind.model(\"draft\")),\n            Button(\"Add\", on_click=Action.append(\"tasks\", Bind(\"draft\"))),\n            Button(\"Clear all\", on_click=Action.set(\"tasks\", value=[])),\n            class_name=\"cluster\",\n        ),\n        Watch(\"tasks\", then=Action.reset(\"draft\")),\n        Show(Predicate.is_empty(\"tasks\"), Text(\"No tasks yet.\", class_name=\"muted\")),\n        Container(\n            Repeat(\"tasks\", template=lambda: Text(RepeatItem.value())),\n            class_name=\"stack card\",\n        ),\n        title=\"Tasks\",\n    )"),
+            ("h2", "What to notice"),
+            ("list", [
+                "`State(\"draft\", \"\")` and `State(\"tasks\", [])` are both children of `Page(...)`, which is what makes them declared on the page.",
+                "`Bind(\"draft\")` as `Action.append`'s value argument reads whatever the input currently holds at the moment the button is clicked.",
+                "`Watch(\"tasks\", then=Action.reset(\"draft\"))` fires whenever `tasks` changes, so the input empties itself right after a task is added.",
+                "`Show(Predicate.is_empty(\"tasks\"), ...)` and `Repeat(\"tasks\", ...)` read the same list; nothing here is hand-written JavaScript -- every behavior is validated against a fixed vocabulary at build time.",
+                "`.cluster`, `.stack` and `.card` are the built-in layout and style utility classes from [styling and layout](/tutorial/styling-and-layout); nothing here needed a stylesheet of its own.",
+            ]),
+            ("p", "Walked through step by step in [lists and conditionals](/tutorial/lists-and-conditionals)."),
         ],
     },
 }

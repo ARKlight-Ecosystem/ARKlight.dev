@@ -16,16 +16,21 @@ _ROWS = [
     ("/tutorial",                      "tutorial", "Tutorial overview"),
     ("/tutorial/pages-and-routes",     "tutorial", "1. Pages and routes"),
     ("/tutorial/state-and-actions",    "tutorial", "2. State and actions"),
+    ("/tutorial/styling-and-layout",   "tutorial", "3. Styling and layout"),
+    ("/tutorial/reusable-components",  "tutorial", "4. Reusable components"),
+    ("/tutorial/lists-and-conditionals", "tutorial", "5. Lists and conditionals"),
 
     ("/docs",                          "docs",     "Reference overview"),
     ("/docs/components",               "docs",     "Components"),
     ("/docs/actions",                  "docs",     "Actions"),
     ("/docs/cli",                      "docs",     "CLI"),
     ("/docs/gotchas",                  "docs",     "Gotchas"),
+    ("/docs/experimental",             "docs",     "Experimental APIs"),
 
     ("/examples",                      "examples", "Examples overview"),
     ("/examples/hello-site",           "examples", "Hello site"),
     ("/examples/counter",              "examples", "Counter"),
+    ("/examples/todo-list",            "examples", "Todo list"),
 
     ("/changelog",                     "project",  "Changelog"),
     ("/license",                       "project",  "License"),
