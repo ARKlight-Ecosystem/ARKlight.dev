@@ -26,7 +26,24 @@ nav, cards, buttons, code blocks, forms, focus rings -- with no
 per-component dark-mode branching.
 """
 
-from arklight.backend.script_extension import ScriptExtension
+try:
+    # Only `arklight build` (the compiler itself) ever needs this --
+    # it runs as part of the `arklight` package, so the import always
+    # succeeds there. `scripts/gen_site.py` and `scripts/check_content.py`
+    # run under plain `python3` and only ever read the constants below
+    # (FONT_FAMILY, ROLES) from this module, never `apply_theme()` or
+    # `ThemeToggleScript` -- but Python still has to import this whole
+    # file to get at those constants, so the import can't be allowed to
+    # fail just because *this* `python3` (as opposed to whatever `python3`
+    # or venv `arklight` itself was installed into -- pipx and
+    # `pip install --user` both commonly disagree with the plain
+    # `python3` on PATH) doesn't have the `arklight` package on its
+    # sys.path.
+    from arklight.backend.script_extension import ScriptExtension
+    _HAS_SCRIPT_EXTENSION = True
+except ImportError:
+    ScriptExtension = object  # plain base so the class below still defines cleanly
+    _HAS_SCRIPT_EXTENSION = False
 
 # Material 3 color roles, light scheme, seeded from a crimson matching
 # the logo's accent rather than Material's stock baseline purple
@@ -401,7 +418,15 @@ def apply_theme(site):
         "border-radius": "0",
     }, allow_redefine=True)
 
-    site.register_script_extension(ThemeToggleScript)
+    if _HAS_SCRIPT_EXTENSION:
+        site.register_script_extension(ThemeToggleScript)
+    # else: unreachable in a real `arklight build` (see the `try` import
+    # above) -- apply_theme() only ever runs inside site.py, which only
+    # the `arklight` CLI executes, and that process always has `arklight`
+    # importable since it *is* the arklight package running. This guard
+    # exists purely so `theme.py` stays importable by the bare `python3`
+    # that `scripts/gen_site.py` and `scripts/check_content.py` run
+    # under, which only ever read FONT_FAMILY/ROLES from this module.
 
 
 # ----------------------------------------------------------------------
