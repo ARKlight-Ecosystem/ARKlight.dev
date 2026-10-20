@@ -465,6 +465,26 @@ class ThemeToggleScript(ScriptExtension):
           root.classList.toggle("theme-dark", theme === "dark");
         }
 
+        // localStorage is unreliable under file:// -- Firefox 92+
+        // partitions it per file path, Chromium-family browsers can
+        // throw SecurityError outright -- so theme persistence
+        // silently degrading to OS-preference-only on every page is
+        // expected there, not a bug in this script. The only real
+        // fix is serving over http(s) (`make serve`, or real
+        // hosting), where every page shares one origin. Checked
+        // unconditionally, once, rather than only from inside a
+        // catch -- partitioned storage often returns null silently
+        // rather than throwing, so a try/catch alone would miss it.
+        if (window.location.protocol === "file:" && window.console && console.warn) {
+          console.warn(
+            "[ARKlight theme] Viewing via file:// -- localStorage " +
+            "theme persistence is unreliable here (browser-level " +
+            "restriction, not a site bug). Serve over http(s), e.g. " +
+            "`make serve`, to have the dark/light choice persist " +
+            "across pages."
+          );
+        }
+
         function storedTheme() {
           try {
             return localStorage.getItem(KEY);
