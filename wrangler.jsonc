@@ -1,0 +1,20 @@
+{
+  // Cloudflare Workers config for deploying this site as static assets --
+  // no Worker script needed (no "main" field below), since there's no
+  // server-side logic: the browser never runs anything but the arklight.js
+  // runtime ARKlight itself generates. See docs/DEPLOY-CLOUDFLARE.md for
+  // the matching dashboard setup (build command / deploy command / env
+  // vars) this file alone doesn't cover.
+  "name": "arklight-site",
+  "compatibility_date": "2026-10-20",
+  "assets": {
+    // Matches the Makefile's OUT default (`OUT ?= ARK`) and the build
+    // command in docs/DEPLOY-CLOUDFLARE.md -- change both together if
+    // you ever rename the local output directory.
+    "directory": "./ARK",
+    // Serves the site's own generated 404.html (see components/render.py,
+    // CONTENT["/404"]) instead of Cloudflare's generic 404 for any
+    // unmatched path.
+    "not_found_handling": "404-page"
+  }
+}
