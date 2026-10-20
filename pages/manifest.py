@@ -33,10 +33,17 @@ _ROWS = [
     ("/docs/concepts/state-model",             "concepts", "State model"),
     ("/docs/concepts/fixture-driven-docs",     "concepts", "Fixture-driven docs"),
 
+    ("/docs/notes/styling-model",             "notes", "Styling model"),
+    ("/docs/notes/preprocessing",             "notes", "Preprocessing"),
+    ("/docs/notes/sourcemaps-and-debugging",  "notes", "Sourcemaps and debugging"),
+    ("/docs/notes/custom-elements",           "notes", "Custom elements"),
+    ("/docs/notes/build-tooling",             "notes", "Build tooling"),
+
     ("/examples",                      "examples", "Examples overview"),
     ("/examples/hello-site",           "examples", "Hello site"),
     ("/examples/counter",              "examples", "Counter"),
     ("/examples/todo-list",            "examples", "Todo list"),
+    ("/examples/markdown-authoring",   "examples", "Markdown authoring"),
 
     ("/changelog",                     "project",  "Changelog"),
     ("/license",                       "project",  "License"),
@@ -62,6 +69,7 @@ SECTION_TITLES = {
     "tutorial": "Tutorial",
     "docs": "Reference",
     "concepts": "Concepts",
+    "notes": "Compiler notes",
     "examples": "Examples",
     "project": "Project",
     "start": "Start here",

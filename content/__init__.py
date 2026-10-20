@@ -4,10 +4,10 @@ Plain Python (no ARKlight vocabulary). Each module exposes PAGES, a
 dict of route -> page dict. A page dict has: title, description, lead,
 blocks.
 """
-from . import home, start, tutorial, reference, concepts, examples, project
+from . import home, start, tutorial, reference, concepts, notes, examples, project
 
 CONTENT = {}
-for _m in (home, start, tutorial, reference, concepts, examples, project):
+for _m in (home, start, tutorial, reference, concepts, notes, examples, project):
     for _route, _page in _m.PAGES.items():
         assert _route not in CONTENT, f"duplicate content for {_route}"
         CONTENT[_route] = _page
