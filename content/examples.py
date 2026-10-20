@@ -1,7 +1,17 @@
 import os
 
+from site_config import SITE_URL
+
 _HERE = os.path.dirname(__file__)
 _HELLO = open(os.path.join(_HERE, "_hello_site_excerpt.txt")).read().rstrip()
+# The island build is a real, separately-built page nested at this path
+# under the main site's own output (see the Makefile's `island` target,
+# and examples/markdown-island/site.py). It isn't a route this site's
+# own `pages/manifest.py` registers, so it has to be linked as an
+# absolute URL -- render.py's internal-link check only resolves routes
+# in ROUTES, and would silently drop a root-relative link to a path
+# that isn't one of them.
+_ISLAND_URL = SITE_URL + "/examples/markdown-authoring/live/"
 
 PAGES = {
     "/examples": {
@@ -73,8 +83,9 @@ PAGES = {
         "lead": "What authoring a page as Markdown looks like, and what actually builds today.",
         "blocks": [
             ("p", "This repository also carries a small, separate scaffold project, `md-theme-demo/`, built around a `# include <markdown.ARKlight>` directive that, according to its own README and `site.py` comments, turns a folder of `.md` files into pages with no `@site.page(...)` or `Page(...)` tree at all."),
-            ("note", "Building `md-theme-demo/` against the ARKlight version installed for this patch (v0.70.1) fails: `arklight build` rejects `# include <markdown.ARKlight>` at the preamble-resolution stage, naming the two directive forms that do exist -- `<stdlib.ARKlight>` and `<acc.<dotted.module.path>>`. Treat the markdown directive as aspirational or version-specific rather than a feature of the installed compiler; verify with `arklight search` or a real build before relying on it yourself."),
+            ("note", "Building `md-theme-demo/` against the ARKlight version installed for this patch (v0.70.1) fails: `arklight build` rejects `# include <markdown.ARKlight>` at the preamble-resolution stage, naming the two directive forms that do exist -- `<stdlib.ARKlight>` and `<acc.<dotted.module.path>>`. `arklight search Markdown` turns up nothing either. Treat the markdown directive as aspirational or version-specific rather than a feature of the installed compiler; verify with `arklight search` or a real build before relying on it yourself."),
             ("p", "The content is still worth carrying over, since it's a clean demonstration of the inline markup and block types this site already renders through `components/render.py`: inline code, links, lists, a table and a note card. What follows is that same content, carried by hand into this site's own `title`/`description`/`blocks` shape rather than left to an unbuilt directive."),
+            ("p", "There is also a real, buildable version: `examples/markdown-island/site.py` reproduces the same content as an actual `Page(...)` tree, with its own palette so it deliberately looks like a separate island rather than another page of this site, plus a link back. It builds on its own and is nested into this site's own output at `/examples/markdown-authoring/live/` -- [open it](" + _ISLAND_URL + ") and use the link at the bottom to come back."),
             ("h2", "What it can hold"),
             ("p", "A paragraph can carry `inline code` and a [link back to the ARKlight repository](https://github.com/ARKlight-Ecosystem/ARKlight). The original Markdown version could also carry italics and bold; this site's own inline parser (`components/render.py`) only understands backtick code and `[label](href)` links, which is part of why the rest of this page is plain prose rather than a reproduction of that formatting."),
             ("h3", "A short list"),
