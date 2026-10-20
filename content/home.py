@@ -35,6 +35,7 @@ PAGES = {
                 ("Components that compile away", "User-defined components expand during compilation, so the abstraction does not survive into the generated site.", "/docs/components"),
                 ("Package it your way", "Pack a build into a single sealed `.ark` bundle, make it a PWA, or deploy it to Cloudflare Workers with `arklight deploy`.", "/docs/cli"),
                 ("Diagnostics with a voice", "Rei, the compiler narrator, can narrate a build in plain sentences with `--narrate`.", "/docs/cli"),
+                ("Open, inspectable repos", "Both the compiler and this website are public on GitHub: read the source, file an issue, send a pull request.", "https://github.com/ARKlight-Ecosystem"),
             ]),
             ("h2", "Start here"),
             ("p", "New to ARKlight? Go to [Getting started](/getting-started), then work through the [tutorial](/tutorial). Already building something? The [reference](/docs) and the [gotchas](/docs/gotchas) will save you a few build cycles."),

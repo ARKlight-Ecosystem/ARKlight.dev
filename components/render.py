@@ -14,10 +14,11 @@ Inline markup inside text: `code` and [label](href).
 import re
 
 from site_config import (
-    FAVICON, OG_IMAGE, SITE_NAME, SITE_URL, TAGLINE, REPO_URL, PYPI_URL,
+    APPLE_TOUCH_ICON, FAVICON, OG_IMAGE, SITE_NAME, SITE_URL, TAGLINE, REPO_URL, PYPI_URL,
 )
 from pages.manifest import PAGES, TOP_NAV, SECTION_TITLES, by_route
 from content import CONTENT
+from theme import GOOGLE_FONTS_HREF
 
 _INLINE = re.compile(r"(`[^`]+`|\[[^\]]+\]\([^)]+\))")
 _LINK = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
@@ -163,14 +164,21 @@ def _head_props(route, c):
         favicon=FAVICON,
     )
     meta = {"twitter:card": "summary_large_image"}
-    links = []
+    # Material You's type ramp leads with Roboto (see theme.py); these
+    # two tags are how it actually loads in the browser instead of
+    # silently falling back to the font stack's next entry.
+    links = [
+        {"rel": "preconnect", "href": "https://fonts.googleapis.com"},
+        {"rel": "preconnect", "href": "https://fonts.gstatic.com", "crossorigin": ""},
+        {"rel": "stylesheet", "href": GOOGLE_FONTS_HREF},
+        {"rel": "apple-touch-icon", "href": APPLE_TOUCH_ICON},
+    ]
     if route == "/404":
         meta["robots"] = "noindex"
     else:
         links.append({"rel": "canonical", "href": url})
     props["meta"] = meta
-    if links:
-        props["links"] = links  # ARKlight rejects an empty links=[]
+    props["links"] = links  # ARKlight rejects an empty links=[], but this is never empty
     return props
 
 

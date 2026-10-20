@@ -3,14 +3,23 @@
 ```
 pages/manifest.py ──┐
 content/*.py ───────┼─> scripts/gen_site.py ─> site.py
-site_config.py ─────┘                              │
-                                                   v
+site_config.py ─────┤                              │
+theme.py ───────────┘                              v
                               components/render.py (called by every route)
                                                    │
                          arklight build site.py ───┘──> ARK/*.html
                                                    │
                          scripts/postbuild.py ─────┴──> sitemap.xml, robots.txt
 ```
+
+`theme.py` holds the Material You design tokens (color roles, shape scale, elevation)
+as plain data; `scripts/gen_site.py` imports it twice -- once to pass `bg`/
+`font_family`/`button_text` into the `Site(...)` constructor (the only three
+`--ark-*` tokens `Site()` exposes directly), and once to call `apply_theme(site)`,
+which redeclares the rest of `:root` and the handful of utility classes/tags
+(`.card`, `.nav`, `button`, ...) through `site.style_selector(...)`. See `theme.py`'s
+own docstring for why this is a `style_selector(":root", {...})` call and not a
+`Site(...)` kwarg.
 
 ## Why `site.py` is generated
 
