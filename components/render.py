@@ -105,11 +105,27 @@ def block(b):
 # --------------------------------------------------------------------
 
 def _header():
-    links = [Link(SITE_NAME, href="/")]
+    # `Link` only accepts text children (see docs/AUTHORING.md), so the
+    # logo mark can't nest inside the wordmark link -- it sits beside
+    # it instead, both inside the flex `.brand` group styled in
+    # theme.py.
+    brand = Container(
+        Image(src="/assets/ARKlight-logo.png", alt=f"{SITE_NAME} logo", class_name="brand-mark"),
+        Link(SITE_NAME, href="/", class_name="brand-name"),
+        class_name="brand",
+    )
+    links = []
     for label, href in TOP_NAV:
         if href in ROUTES:
             links.append(Link(label, href=href))
-    return Header(Container(*links, class_name="nav"))
+    toggle = Button(
+        "Dark mode",
+        id="theme-toggle",
+        type="button",
+        class_name="theme-toggle",
+        aria_label="Toggle dark mode",
+    )
+    return Header(brand, Container(*links, class_name="nav"), toggle, class_name="site-header")
 
 
 def _footer():
@@ -214,6 +230,7 @@ def _render_home(route, c, head):
         Heading(c.get("h1", c["title"]), level=1),
         Text(c["lead"], class_name="muted"),
         Pre(Code(c["install"])),
+        class_name="hero",
     )
     demo = Container(
         Container(Heading("You write", level=3), Pre(Code(c["source"]))),

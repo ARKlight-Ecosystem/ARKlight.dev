@@ -10,7 +10,7 @@ from theme import apply_theme
 
 site = Site(
     name="arklight-site", lang="en", max_width="72rem", sidebar_width="14rem",
-    bg='#FFF8F7', font_family='"Roboto", "Segoe UI", system-ui, -apple-system, sans-serif', button_text='#FFFFFF',
+    bg='#F7E8E6', font_family='"Roboto", "Segoe UI", system-ui, -apple-system, sans-serif', button_text='#FFFFFF',
 )
 # Material You (MD3) theme -- see theme.py.
 apply_theme(site)
