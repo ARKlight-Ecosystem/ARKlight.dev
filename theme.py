@@ -202,6 +202,10 @@ def apply_theme(site):
         "--ark-accent-hover": "#7A1C34",  # primary, one step darker
         "--ark-border": _role("outline-variant"),
         "--ark-button-text": _role("on-primary"),
+        # min() lets a card shrink below 16rem on very narrow screens
+        # instead of forcing horizontal scroll (grid is auto-fit/minmax).
+        "--ark-grid-min": "min(16rem, 100%)",
+        "color-scheme": "light",
     })
     site.style_selector(":root", root_vars)
 
@@ -222,6 +226,7 @@ def apply_theme(site):
         "--ark-accent-hover": "#FFD1DA",  # primary, one step lighter (hover brightens on dark)
         "--ark-border": _role("outline-variant", DARK_ROLES),
         "--ark-button-text": _role("on-primary", DARK_ROLES),
+        "color-scheme": "dark",  # native scrollbars/form controls follow the toggle
     })
     site.style_selector("html.theme-dark", dark_vars)
 
@@ -230,12 +235,17 @@ def apply_theme(site):
     site.style_selector(".nav", {
         "border-bottom": "none",
         "background": _var("surface-container-low"),
-        "border-radius": SHAPE["full"],
-        "padding": "0.5rem 0.75rem",
+        "border-radius": SHAPE["xl"],  # not "full": a wrapped 2-row nav would look like a blob
+        "padding": "0.375rem",
         "gap": "0.25rem",
     }, allow_redefine=True)
     site.style_selector(".nav a", {
-        "padding": "0.5rem 1rem",
+        # 44px minimum hit area (WCAG 2.5.5 / platform guidance)
+        "display": "inline-flex",
+        "align-items": "center",
+        "min-height": "2.75rem",
+        "padding": "0 1rem",
+        "overflow-wrap": "anywhere",  # an unbreakable word must never widen the page
         "border-radius": SHAPE["full"],
         "transition": "background 0.15s ease, color 0.15s ease",
         "&:hover": {
@@ -268,6 +278,7 @@ def apply_theme(site):
         "border-radius": SHAPE["full"],
         "font-weight": "500",
         "padding": "0.7em 1.6em",
+        "min-height": "2.75rem",
         "box-shadow": "var(--md-elevation-1)",
         "transition": "box-shadow 0.15s ease, background 0.15s ease",
         "&:hover": {"box-shadow": "var(--md-elevation-2)"},
@@ -280,13 +291,22 @@ def apply_theme(site):
         "background": _var("surface-container-high"),
         "color": _var("on-surface-variant"),
         "border-radius": SHAPE["xs"],
+        "overflow-wrap": "anywhere",
     })
     site.style_selector("pre", {
         "background": _var("on-surface"),
         "color": _var("surface-container-lowest"),
         "border-radius": SHAPE["md"],
+        "font-size": "clamp(0.8125rem, 0.76rem + 0.25vw, 0.95rem)",
+        "line-height": "1.55",
+        "tab-size": "4",
+        "max-width": "100%",
+        "overscroll-behavior-x": "contain",
     })
-    site.style_selector("pre code", {"background": "none", "color": "inherit"})
+    site.style_selector("pre code", {
+        "background": "none", "color": "inherit",
+        "white-space": "pre", "overflow-wrap": "normal",
+    })
 
     # Details/dialog/fieldset/inputs: align corner radii to the shape
     # scale and borders to outline-variant instead of the plain
@@ -331,29 +351,41 @@ def apply_theme(site):
     # ------------------------------------------------------------------
     site.style_selector(".site-header", {
         "justify-content": "space-between",
-        "padding": "0.85rem 1.25rem",
-        "margin": "-0.5rem -1.25rem 2rem",
+        "gap": "0.5rem 0.75rem",
+        "padding": "0.625rem clamp(0.625rem, 2.5vw, 1.25rem)",
+        "margin": "0 0 clamp(1.25rem, 4vw, 2rem)",
         "background": _var("surface-container-low"),
         "border-radius": SHAPE["lg"],
         "border": "1px solid " + _var("outline-variant"),
     })
     site.style_selector(".site-header .nav", {
         "margin": "0",
-        "padding": "0.35rem 0.5rem",
     }, allow_redefine=True)
+    # Narrow default: brand and theme toggle share row 1; the nav takes
+    # the full row 2. `order` reflows without touching the DOM order
+    # (brand, nav, toggle) that screen readers and keyboards follow.
     site.style_selector(".brand", {
         "display": "flex",
         "align-items": "center",
         "gap": "0.6rem",
+        "min-width": "0",
     })
+    # :where() = zero specificity, so the wide-screen media_query below
+    # wins no matter what order ARKlight emits the two blocks in.
+    site.style_selector(":where(.brand)", {"order": "1", "flex": "1 1 auto"})
+    site.style_selector(":where(.site-nav)", {"order": "3", "flex": "1 1 100%"})
     site.style_selector(".brand-mark", {
         "width": "2.25rem",
         "height": "2.25rem",
         "border-radius": SHAPE["full"],
         "box-shadow": "var(--md-elevation-1)",
         "margin": "0",
+        "flex": "none",
     })
     site.style_selector(".brand-name", {
+        "display": "inline-flex",
+        "align-items": "center",
+        "min-height": "2.75rem",
         "font-weight": "700",
         "font-size": "1.1rem",
         "color": _var("on-surface"),
@@ -373,6 +405,7 @@ def apply_theme(site):
         "box-shadow": "none",
         "padding": "0.5em 1.1em",
         "font-size": "0.9rem",
+        "flex": "none",
         "&:hover": {
             "background": _var("surface-container-high"),
             "box-shadow": "none",
@@ -407,7 +440,7 @@ def apply_theme(site):
     # consistent with the header treatment.
     site.style_selector("footer", {
         "margin-top": "3rem",
-        "padding": "1.5rem 1.25rem",
+        "padding": "clamp(1rem, 3vw, 1.5rem) clamp(0.75rem, 2.5vw, 1.25rem)",
         "background": _var("surface-container-low"),
         "border-radius": SHAPE["lg"],
         "border": "1px solid " + _var("outline-variant"),
@@ -418,6 +451,8 @@ def apply_theme(site):
         "border-radius": "0",
     }, allow_redefine=True)
 
+    _responsive_layer(site)
+
     if _HAS_SCRIPT_EXTENSION:
         site.register_script_extension(ThemeToggleScript)
     # else: unreachable in a real `arklight build` (see the `try` import
@@ -427,6 +462,98 @@ def apply_theme(site):
     # exists purely so `theme.py` stays importable by the bare `python3`
     # that `scripts/gen_site.py` and `scripts/check_content.py` run
     # under, which only ever read FONT_FAMILY/ROLES from this module.
+
+
+def _responsive_layer(site):
+    """Mobile-first responsive rules. Intrinsic techniques first (fluid
+    clamp() type, auto-fit grids, flex-basis switching, min-width: 0),
+    one real media query only where reordering is unavoidable."""
+    site.style_selector("html", {
+        "-webkit-text-size-adjust": "100%",
+        "text-size-adjust": "100%",
+        "scroll-padding-top": "1rem",
+    }, allow_redefine=True)
+
+    # Page frame: fluid gutters, notch-safe, dynamic viewport height.
+    gutter = "clamp(0.75rem, 0.25rem + 3.5vw, 1.5rem)"
+    site.style_selector("body", {
+        "padding": f"1rem {gutter} 3rem",
+        "padding-left": f"max({gutter}, env(safe-area-inset-left))",
+        "padding-right": f"max({gutter}, env(safe-area-inset-right))",
+        "min-height": "100dvh",  # ignored (100vh stays) where dvh is unsupported
+    }, allow_redefine=True)
+
+    # Fluid type: rem + vw so user font-size preferences still scale it.
+    site.style_selector("h1", {
+        "font-size": "clamp(2rem, 1.35rem + 3vw, 3.25rem)",
+        "line-height": "1.1",
+        "text-wrap": "balance",
+    }, allow_redefine=True)
+    site.style_selector("h2", {
+        "font-size": "clamp(1.45rem, 1.15rem + 1.4vw, 2rem)",
+        "line-height": "1.2",
+        "text-wrap": "balance",
+    }, allow_redefine=True)
+    site.style_selector("h3", {
+        "font-size": "clamp(1.15rem, 1.05rem + 0.6vw, 1.4rem)",
+        "line-height": "1.25",
+        "text-wrap": "balance",
+    }, allow_redefine=True)
+    site.style_selector("p", {"text-wrap": "pretty"}, allow_redefine=True)
+
+    # Reading measure + the classic flex bug: items default to
+    # min-width:auto, so one long <pre> stretched the whole page.
+    site.style_selector("main", {"min-width": "0"}, allow_redefine=True)
+    site.style_selector("article", {"min-width": "0"}, allow_redefine=True)
+    # ~70 characters per line for text; code, tables and card grids stay full width.
+    site.style_selector(".prose", {"max-width": "42rem"})
+    site.style_selector("article > p", {"max-width": "42rem"})
+    site.style_selector("article > ul", {"max-width": "42rem"})
+    site.style_selector("article > ol", {"max-width": "42rem"})
+    site.style_selector(".switcher > div", {"min-width": "0"}, allow_redefine=True)
+    site.style_selector(".grid > div", {"min-width": "0"}, allow_redefine=True)
+    site.style_selector(".sidebar > :first-child", {"min-width": "0"}, allow_redefine=True)
+
+    # Tables scroll inside their own box rather than the page.
+    site.style_selector(".table-scroll", {
+        "overflow-x": "auto",
+        "max-width": "100%",
+        "margin": "1em 0",
+    })
+
+    # Section sidebar: a vertical list when it is a narrow column
+    # beside the article, a wrapping row of chips when it spans the
+    # full width above it. Same flex-basis switch ARKlight's own
+    # .switcher uses -- the basis is huge below 17rem (one per line)
+    # and clamps to 0 above it (sized to content). No breakpoint.
+    site.style_selector(".sidebar nav", {
+        "display": "flex", "flex-wrap": "wrap", "gap": "0.25rem",
+        "align-content": "flex-start",
+        "overflow-x": "auto",  # last resort at extreme text sizes: scroll the chips, not the page
+        "padding": "2px",      # keeps focus rings from being clipped by that scroll box
+    })
+    site.style_selector(".sidebar nav > h3", {"flex": "1 1 100%", "margin": "0 0 0.25rem"})
+    site.style_selector(".sidebar nav > div", {"flex": "0 1 calc((17rem - 100%) * 999)"})
+    site.style_selector(".sidebar nav a", {
+        "display": "flex", "align-items": "center",
+        "min-height": "2.75rem", "padding": "0 1rem",
+        "border-radius": SHAPE["full"],
+        "white-space": "nowrap",
+        "&:hover": {"background": _var("surface-container-high"), "text-decoration": "none"},
+        "&.is-active": {
+            "background": _var("secondary-container"),
+            "color": _var("on-secondary-container"),
+            "font-weight": "500",
+        },
+    })
+
+    # Wide header (>=72rem, where the 6 links truly fit): single row (brand | nav | toggle). The one
+    # viewport-keyed rule in the site; ARKlight flags it as experimental
+    # because `order` can't be expressed intrinsically.
+    site.style_selector(":where(.theme-toggle)", {"order": "2"})
+    site.media_query("min-width: 72rem", "site-nav", {"order": "2", "flex": "0 1 auto"})
+    site.media_query("min-width: 72rem", "brand", {"flex": "0 1 auto"})
+    site.media_query("min-width: 72rem", "theme-toggle", {"order": "3"})
 
 
 # ----------------------------------------------------------------------

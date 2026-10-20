@@ -64,7 +64,7 @@ def inline(text):
                 nodes.append(m.group(1))
             else:
                 nodes.append(part)
-    return Container(*nodes)
+    return Container(*nodes, class_name="prose")
 
 
 def block(b):
@@ -86,7 +86,8 @@ def block(b):
         rows = TableBody(
             *[TableRow(*[TableCell(plain(c)) for c in row]) for row in b[2]]
         )
-        return Table(head, rows)
+        # Scroll container: a wide table scrolls inside its own box, never the page.
+        return Container(Table(head, rows), class_name="table-scroll")
     if kind == "cards":
         cards = []
         for title, text, href in b[1]:
@@ -104,7 +105,12 @@ def block(b):
 # Shell: header, footer, section sidebar, prev/next, SEO head
 # --------------------------------------------------------------------
 
-def _header():
+def _is_current(href, route):
+    """Top-nav highlight: the page itself or anything beneath it."""
+    return href == route or (href != "/" and route.startswith(href + "/"))
+
+
+def _header(route="/"):
     # `Link` only accepts text children (see docs/AUTHORING.md), so the
     # logo mark can't nest inside the wordmark link -- it sits beside
     # it instead, both inside the flex `.brand` group styled in
@@ -117,7 +123,8 @@ def _header():
     links = []
     for label, href in TOP_NAV:
         if href in ROUTES:
-            links.append(Link(label, href=href))
+            cls = "is-active" if _is_current(href, route) else None
+            links.append(Link(label, href=href, class_name=cls) if cls else Link(label, href=href))
     toggle = Button(
         "Dark mode",
         id="theme-toggle",
@@ -125,7 +132,7 @@ def _header():
         class_name="theme-toggle",
         aria_label="Toggle dark mode",
     )
-    return Header(brand, Container(*links, class_name="nav"), toggle, class_name="site-header")
+    return Header(brand, Container(*links, class_name="nav site-nav"), toggle, class_name="site-header")
 
 
 def _footer():
@@ -148,7 +155,11 @@ def _footer():
 def _sidebar(section, route):
     pages = [p for p in PAGES if p["section"] == section and p["route"] in ROUTES]
     title = SECTION_TITLES.get(section, section.title())
-    links = [Link(p["label"], href=p["route"]) for p in pages]
+    links = [
+        Link(p["label"], href=p["route"], class_name="is-active") if p["route"] == route
+        else Link(p["label"], href=p["route"])
+        for p in pages
+    ]
     return Nav(Heading(title, level=3), *[Container(l) for l in links])
 
 
@@ -222,7 +233,7 @@ def render(route):
         main = Main(Container(_sidebar(section, route), article, class_name="sidebar"))
     else:
         main = Main(article)
-    return Page(_header(), main, _footer(), **head)
+    return Page(_header(route), main, _footer(), **head)
 
 
 def _render_home(route, c, head):
@@ -239,4 +250,4 @@ def _render_home(route, c, head):
     )
     body = [hero, demo]
     body.extend(block(b) for b in c["blocks"])
-    return Page(_header(), Main(*body), _footer(), **head)
+    return Page(_header(route), Main(*body), _footer(), **head)
