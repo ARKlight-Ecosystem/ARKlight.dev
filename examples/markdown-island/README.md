@@ -1,18 +1,27 @@
 # markdown-island
 
-A real, buildable ARKlight site. `../../md-theme-demo/` describes
-itself as turning `content/index.md` into a page with
-`# include <markdown.ARKlight>` and `Site(markdown_theme=...)`.
-Neither exists in the ARKlight version this repository is pinned to
-(v0.70.1): `arklight build md-theme-demo/site.py` fails at preamble
-resolution, and `arklight search Markdown` finds nothing. See
-`/examples/markdown-authoring` on the main site for the full story,
-checked against a real build rather than assumed.
+A real, buildable ARKlight site. `../../md-theme-demo/` turns
+`content/index.md` into a page with `# include <markdown.ARKlight>`
+and `Site(markdown_theme=...)`. Neither exists on the ARKlight `main`
+branch this repository's own site is otherwise pinned to (v0.70.1):
+`arklight build md-theme-demo/site.py` fails there at preamble
+resolution, and `arklight search Markdown` finds nothing. Both work
+on the `alpha` branch -- confirmed with a real `arklight build` of
+this project against `alpha` -- so this island now uses the real
+directive directly instead of reproducing the content by hand. See
+`/examples/markdown-authoring` on the main site for the fuller story.
 
-This project reproduces the same content by hand, as an actual
-`Page(...)` tree, with its own palette -- deliberately unrelated to
-`theme.py`'s Material You crimson -- so visiting it reads as leaving
-the main site entirely. A `Link` at the bottom goes back.
+This project's `content/index.md` uses the built-in `"reading"`
+`markdown_theme` preset, the closest match to this island's old
+bespoke cream/serif palette -- deliberately unrelated to `theme.py`'s
+Material You crimson, so visiting it still reads as leaving the main
+site entirely. `content/index.md` ends with its own Markdown link
+back.
+
+Building this project needs an `alpha`-branch ARKlight install
+(`pip install -e .` from an `ARKlight` checkout on the `alpha`
+branch); it fails against a `main`-branch install the same way
+`md-theme-demo/` does.
 
 ## Build it on its own
 
