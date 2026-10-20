@@ -22,6 +22,7 @@ PAGES = {
                 ("CLI", "build, pack, unpack, pwa, deploy, new, search, live-streaming.", "/docs/cli"),
                 ("Gotchas", "The four mistakes that cost the most build cycles, and the error table.", "/docs/gotchas"),
                 ("Experimental APIs", "The gated escape hatches outside the intrinsic layout model, and why each is flagged.", "/docs/experimental"),
+                ("Concepts", "Five short essays on how ARKlight's static, AST-only model compares to a conventional compile-to-JS framework.", "/docs/concepts/parsing"),
             ]),
         ],
     },

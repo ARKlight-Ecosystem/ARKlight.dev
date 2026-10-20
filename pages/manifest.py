@@ -27,6 +27,12 @@ _ROWS = [
     ("/docs/gotchas",                  "docs",     "Gotchas"),
     ("/docs/experimental",             "docs",     "Experimental APIs"),
 
+    ("/docs/concepts/parsing",                "concepts", "Parsing"),
+    ("/docs/concepts/compilation",             "concepts", "Compilation"),
+    ("/docs/concepts/rendering-model",         "concepts", "Rendering model"),
+    ("/docs/concepts/state-model",             "concepts", "State model"),
+    ("/docs/concepts/fixture-driven-docs",     "concepts", "Fixture-driven docs"),
+
     ("/examples",                      "examples", "Examples overview"),
     ("/examples/hello-site",           "examples", "Hello site"),
     ("/examples/counter",              "examples", "Counter"),
@@ -55,6 +61,7 @@ TOP_NAV = [
 SECTION_TITLES = {
     "tutorial": "Tutorial",
     "docs": "Reference",
+    "concepts": "Concepts",
     "examples": "Examples",
     "project": "Project",
     "start": "Start here",

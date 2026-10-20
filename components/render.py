@@ -227,7 +227,7 @@ def render(route):
         body.append(pn)
     article = Article(*body)
 
-    in_section = section in ("tutorial", "docs", "examples", "project", "start")
+    in_section = section in ("tutorial", "docs", "concepts", "examples", "project", "start")
     siblings = [p for p in PAGES if p["section"] == section and p["route"] in ROUTES]
     if in_section and len(siblings) > 1:
         main = Main(Container(_sidebar(section, route), article, class_name="sidebar"))
