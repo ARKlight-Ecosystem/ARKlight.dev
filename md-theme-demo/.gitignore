@@ -1,0 +1,6 @@
+ARK-light/
+ARK-dark/
+ARK/
+__pycache__/
+*.pyc
+*.patch
